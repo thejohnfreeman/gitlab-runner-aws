@@ -1,0 +1,52 @@
+concurrent = 48
+check_interval = 2
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "linux-c5.2xlarge"
+  limit = 40
+  url = "https://gitlab.com/"
+  token = "GITLAB_RUNNER_TOKEN"
+  executor = "docker+machine"
+  [runners.docker]
+    tls_verify = false
+    image = "alpine:latest"
+    # Privileges are required for things like strace and LeakSanitizer:
+    # https://github.com/google/sanitizers/issues/764
+    privileged = true
+    disable_entrypoint_overwrite = false
+    oom_kill_disable = false
+    disable_cache = true
+    shm_size = 0
+  [runners.cache]
+    Type = "s3"
+    # Whatever `Path` you choose, GitLab will append `project/<project-id>`.
+    Shared = true
+    [runners.cache.s3]
+      ServerAddress = "s3.amazonaws.com"
+      AccessKey = "AWS_ACCESS_KEY"
+      SecretKey = "AWS_SECRET_KEY"
+      BucketName = "gitlab-runners-cache"
+      BucketLocation = "us-east-2"
+  [runners.machine]
+    IdleCount = 0
+    IdleTime = 300
+    MachineDriver = "amazonec2"
+    MachineName = "linux-c5.2xlarge-%s"
+    MachineOptions = [
+      "amazonec2-access-key=AWS_ACCESS_KEY",
+      "amazonec2-secret-key=AWS_SECRET_KEY",
+      "amazonec2-ami=ami-0b316c366679a59d7",
+      "amazonec2-region=us-east-2",
+      "amazonec2-zone=c",
+      "amazonec2-use-private-address=true",
+      "amazonec2-security-group=gitlab-runners",
+      "amazonec2-instance-type=c5.2xlarge",
+      "amazonec2-request-spot-instance=true",
+      "amazonec2-spot-price=0.20",
+    ]
+    OffPeakTimezone = ""
+    OffPeakIdleCount = 0
+    OffPeakIdleTime = 0

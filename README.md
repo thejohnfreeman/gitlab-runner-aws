@@ -130,6 +130,9 @@ configuration documentation][advanced].
 
 [advanced]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html
 
+Do not use the option `amazonec2-private-address-only`. It prevents your
+worker machines from reaching Docker Hub.
+
 After you're finished editing the configuration, restart the service:
 
 ```shell
